@@ -21,6 +21,7 @@ vim_script="$(
   echo -n 'zt:if line > 0|exe "normal " . line . "<C-y>"|endif<CR>'
 )"
 
+# TODO find a good way to report errors
 while inotifywait -r -e modify "$filename" || :; do
   vim --servername "$servername" --remote-send "$vim_script"
 done 1>/dev/null 2>/dev/null &
