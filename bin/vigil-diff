@@ -21,7 +21,7 @@ vim_script="$(
   echo -n 'zt:if line > 0|exe "normal " . line . "<C-y>"|endif<CR>'
 )"
 
-while inotifywait -e modify "$filename" || :; do
+while inotifywait -r -e modify "$filename" || :; do
   vim --servername "$servername" --remote-send "$vim_script"
 done 2>/dev/null &
 trap "kill -s 0 $! && kill $!" EXIT INT
