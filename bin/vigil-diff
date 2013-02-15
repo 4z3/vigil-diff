@@ -23,7 +23,7 @@ vim_script="$(
 
 while inotifywait -r -e modify "$filename" || :; do
   vim --servername "$servername" --remote-send "$vim_script"
-done 2>/dev/null &
+done 1>/dev/null 2>/dev/null &
 trap "kill -s 0 $! && kill $!" EXIT INT
 
 vim --servername "$servername" -c "set ft=diff|$vim_get_git_diff"
