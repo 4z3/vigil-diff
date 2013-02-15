@@ -27,4 +27,9 @@ while inotifywait -r -e modify "$filename" || :; do
 done 1>/dev/null 2>/dev/null &
 trap "kill -s 0 $! && kill $!" EXIT INT
 
-vim --servername "$servername" -c "set ft=diff|$vim_get_git_diff"
+vim_init="$(
+  echo -n 'nnoremap <C-c> :q!<CR>'
+  echo -n '|set ft=diff'
+  echo -n "|$vim_get_git_diff"
+)"
+vim --servername "$servername" -c "$vim_init"
