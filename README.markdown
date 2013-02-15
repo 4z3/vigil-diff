@@ -1,6 +1,6 @@
 # vigil-diff
 
-  watch git-diff's output with vim while you change files
+  watch git-diff's output with vim while you change files.
 
 ## requirements
 
@@ -20,3 +20,4 @@
     vigil-diff file-to-watch
 
   open second terminal and edit `/your/git/repo/file-to-watch`
+  (using any `$EDITOR`)
