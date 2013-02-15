@@ -1,0 +1,29 @@
+#! /bin/sh
+set -euf
+filename="$1"
+servername="diffwatch:$filename"
+
+vim_get_git_diff="silent %!GIT_PAGER=cat git diff --no-color $filename"
+
+# TODO remember/recall mode
+vim_script="$(
+  # got to normal mode (if we aren't already)
+  echo -n '<ESC>'
+  # remember absolute cursor position
+  echo -n 'mZ'
+  # remember relative cursor position
+  echo -n ':let line = winline() - 1<CR>'
+  # fill buffer with git-diff's output ;)
+  echo -n ":$vim_get_git_diff<CR>"
+  # recall absolute cursor position
+  echo -n '`Z'
+  # recall relative cursor position
+  echo -n 'zt:if line > 0|exe "normal " . line . "<C-y>"|endif<CR>'
+)"
+
+while inotifywait -e modify "$filename" || :; do
+  vim --servername "$servername" --remote-send "$vim_script"
+done 2>/dev/null &
+trap "kill -s 0 $! && kill $!" EXIT INT
+
+vim --servername "$servername" -c "set ft=diff|$vim_get_git_diff"
